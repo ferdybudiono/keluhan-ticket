@@ -5,7 +5,7 @@ import KeluhanTable from '@/components/KeluhanTable'
 import StatsChart from '@/components/StatsChart'
 
 export default async function DashboardPage() {
-  const supabase = createClient()
+  const supabase = await createClient()
   
   const {
     data: { user },
