@@ -28,7 +28,7 @@ export default async function DashboardPage() {
           Dashboard Ticketing Keluhan
         </h1>
         <div className="flex items-center space-x-4">
-          <span className="text-gray-600">Halo, {profile?.nama_lengkin || user.email}</span>
+          <span className="text-gray-600">Halo, {profile?.nama_lengkap || user.email}</span>
           <span className="rounded-full bg-blue-100 px-3 py-1 text-sm font-medium text-blue-800">
             {profile?.role}
           </span>
