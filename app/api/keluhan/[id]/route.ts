@@ -2,7 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
-  const supabase = createClient()
+  const supabase = await createClient() // <--- Tambahkan await di sini
   const { data: { user } } = await supabase.auth.getUser()
   
   if (!user) {
