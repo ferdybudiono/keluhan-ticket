@@ -49,7 +49,7 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
 }
 
 export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
-  const supabase = createClient()
+  const supabase = await createClient() // <--- Tambahkan await di sini
   const { data: { user } } = await supabase.auth.getUser()
   
   if (!user) {
