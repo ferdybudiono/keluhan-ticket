@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
@@ -32,7 +33,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-100">
+    <div className="flex min-h-screen items-center justify-center bg-gray-100 px-4">
       <div className="w-full max-w-md rounded-lg bg-white p-8 shadow-md">
         <h1 className="mb-6 text-center text-2xl font-bold text-gray-800">
           Login Ticketing Keluhan
@@ -81,6 +82,13 @@ export default function LoginPage() {
             {loading ? 'Loading...' : 'Login'}
           </button>
         </form>
+        
+        <div className="mt-4 text-center">
+          <span className="text-sm text-gray-600">Belum punya akun? </span>
+          <Link href="/register" className="text-sm font-medium text-blue-600 hover:text-blue-500">
+            Daftar di sini
+          </Link>
+        </div>
       </div>
     </div>
   )
