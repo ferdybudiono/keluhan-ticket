@@ -21,15 +21,21 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
   }
 
   const body = await request.json()
-  const { status, root_cause } = body
+  const { status, root_cause, assigned_to } = body
+
+  const updateData: any = {
+    status,
+    root_cause,
+    updated_at: new Date().toISOString()
+  }
+
+  if (assigned_to !== undefined) {
+    updateData.assigned_to = assigned_to
+  }
 
   const { data, error } = await supabase
     .from('keluhan')
-    .update({
-      status,
-      root_cause,
-      updated_at: new Date().toISOString()
-    })
+    .update(updateData)
     .eq('id', params.id)
     .select()
 
@@ -38,11 +44,15 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
   }
 
   // Log aktivitas
+  const logDetail = assigned_to 
+    ? `Mengupdate status ke ${status}, root cause, dan assignment`
+    : `Mengupdate status ke ${status} dan root cause`
+  
   await supabase.from('aktivitas_log').insert({
     keluhan_id: params.id,
     user_id: user.id,
     aksi: 'update',
-    detail: `Mengupdate status ke ${status} dan root cause`
+    detail: logDetail
   })
 
   return NextResponse.json(data[0])
