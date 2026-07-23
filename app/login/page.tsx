@@ -19,17 +19,9 @@ export default function LoginPage() {
     setError(null)
 
     try {
-      console.log('Attempting login with:', email)
-      
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
-      })
-
-      console.log('Login response:', { 
-        user: data.user?.id, 
-        session: !!data.session,
-        error: error?.message 
       })
 
       if (error) {
@@ -46,16 +38,12 @@ export default function LoginPage() {
       }
 
       if (data.user) {
-        console.log('Login successful, checking profile...')
-        
         // Cek apakah profile user ada
         const { data: profile, error: profileError } = await supabase
           .from('profiles')
           .select('id, role, nama_lengkap')
           .eq('id', data.user.id)
           .single()
-
-        console.log('Profile check:', { profile, profileError })
 
         if (profileError) {
           console.error('Profile error:', profileError)
@@ -64,7 +52,7 @@ export default function LoginPage() {
           return
         }
 
-        console.log('Redirecting to dashboard...')
+        // Force reload untuk memastikan middleware mendeteksi user baru
         window.location.href = '/dashboard'
       }
     } catch (err: any) {

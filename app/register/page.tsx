@@ -40,8 +40,6 @@ export default function RegisterPage() {
     }
 
     try {
-      console.log('Submitting registration...', { email: formData.email, role: formData.role })
-      
       const response = await fetch('/api/auth/register', {
         method: 'POST',
         headers: {
@@ -54,11 +52,8 @@ export default function RegisterPage() {
           role: formData.role
         }),
       })
-
-      console.log('Registration response status:', response.status)
       
       const data = await response.json()
-      console.log('Registration response data:', data)
 
       if (!response.ok) {
         throw new Error(data.error || 'Registrasi gagal')
