@@ -20,14 +20,14 @@ export async function middleware(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser()
 
-  // Jika tidak ada user dan bukan halaman login, redirect ke login
-  if (!user && pathname !== '/login') {
+  // Jika tidak ada user dan bukan halaman login/register, redirect ke login
+  if (!user && pathname !== '/login' && pathname !== '/register') {
     const loginUrl = new URL('/login', request.url)
     return NextResponse.redirect(loginUrl)
   }
 
-  // Jika ada user dan halaman login, redirect ke dashboard
-  if (user && pathname === '/login') {
+  // Jika ada user dan halaman login/register, redirect ke dashboard
+  if (user && (pathname === '/login' || pathname === '/register')) {
     const dashboardUrl = new URL('/dashboard', request.url)
     return NextResponse.redirect(dashboardUrl)
   }
