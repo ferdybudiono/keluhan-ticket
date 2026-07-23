@@ -9,7 +9,7 @@ export async function middleware(request: NextRequest) {
   if (
     pathname.startsWith('/_next') ||
     pathname.startsWith('/static') ||
-    pathname.startsWith('/api/auth') ||
+    pathname.startsWith('/api') ||
     pathname.includes('.')
   ) {
     return NextResponse.next()
@@ -20,14 +20,18 @@ export async function middleware(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser()
 
+  console.log('Middleware - Path:', pathname, 'User:', user?.id)
+
   // Jika tidak ada user dan bukan halaman login/register, redirect ke login
   if (!user && pathname !== '/login' && pathname !== '/register') {
+    console.log('No user, redirecting to login')
     const loginUrl = new URL('/login', request.url)
     return NextResponse.redirect(loginUrl)
   }
 
   // Jika ada user dan halaman login/register, redirect ke dashboard
   if (user && (pathname === '/login' || pathname === '/register')) {
+    console.log('User logged in, redirecting to dashboard')
     const dashboardUrl = new URL('/dashboard', request.url)
     return NextResponse.redirect(dashboardUrl)
   }

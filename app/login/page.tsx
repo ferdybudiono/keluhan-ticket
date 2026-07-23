@@ -19,13 +19,18 @@ export default function LoginPage() {
     setError(null)
 
     try {
-      console.log('Attempting login...')
+      console.log('Attempting login with:', email)
+      
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       })
 
-      console.log('Login response:', { data, error })
+      console.log('Login response:', { 
+        user: data.user?.id, 
+        session: !!data.session,
+        error: error?.message 
+      })
 
       if (error) {
         console.error('Login error:', error)
@@ -34,10 +39,33 @@ export default function LoginPage() {
         return
       }
 
+      if (!data.session) {
+        setError('Login gagal: Session tidak dibuat. Mungkin email belum diverifikasi.')
+        setLoading(false)
+        return
+      }
+
       if (data.user) {
-        console.log('Login successful, redirecting...')
-        router.push('/dashboard')
-        router.refresh()
+        console.log('Login successful, checking profile...')
+        
+        // Cek apakah profile user ada
+        const { data: profile, error: profileError } = await supabase
+          .from('profiles')
+          .select('id, role, nama_lengkap')
+          .eq('id', data.user.id)
+          .single()
+
+        console.log('Profile check:', { profile, profileError })
+
+        if (profileError) {
+          console.error('Profile error:', profileError)
+          setError('Profile tidak ditemukan. Silakan hubungi admin.')
+          setLoading(false)
+          return
+        }
+
+        console.log('Redirecting to dashboard...')
+        window.location.href = '/dashboard'
       }
     } catch (err: any) {
       console.error('Unexpected login error:', err)
