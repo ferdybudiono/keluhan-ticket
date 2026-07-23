@@ -18,17 +18,31 @@ export default function LoginPage() {
     setLoading(true)
     setError(null)
 
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    })
+    try {
+      console.log('Attempting login...')
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      })
 
-    if (error) {
-      setError(error.message)
+      console.log('Login response:', { data, error })
+
+      if (error) {
+        console.error('Login error:', error)
+        setError(error.message)
+        setLoading(false)
+        return
+      }
+
+      if (data.user) {
+        console.log('Login successful, redirecting...')
+        router.push('/dashboard')
+        router.refresh()
+      }
+    } catch (err: any) {
+      console.error('Unexpected login error:', err)
+      setError(err.message || 'Terjadi kesalahan saat login')
       setLoading(false)
-    } else {
-      router.push('/dashboard')
-      router.refresh()
     }
   }
 
